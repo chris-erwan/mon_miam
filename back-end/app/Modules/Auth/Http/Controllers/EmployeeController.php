@@ -50,6 +50,6 @@ class EmployeeController
 
     private function employee(Request $request): Employee
     {
-        return Employee::findOrFail($request->user()->id);
+        return Employee::withoutGlobalScope('roles')->findOrFail($request->user()->id);
     }
 }

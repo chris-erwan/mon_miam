@@ -20,7 +20,7 @@ class Employee extends User
         });
 
         static::creating(function (Employee $employee) {
-            $employee->role ??= static::defaultRole();
+            $employee->role ??= static::defaultRole()->value;
         });
     }
 

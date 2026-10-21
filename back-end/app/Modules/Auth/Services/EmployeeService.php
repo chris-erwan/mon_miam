@@ -43,7 +43,7 @@ class EmployeeService
         return ['restaurant_id' => $restaurantId, 'period' => 'week', 'data' => []];
     }
 
-    private function ensureWorksIn(Employee $employee, int $restaurantId): void
+    protected function ensureWorksIn(Employee $employee, int $restaurantId): void
     {
         if (! $employee->worksIn($restaurantId)) {
             throw new AuthorizationException("Ce restaurant n'est pas le vôtre.");
