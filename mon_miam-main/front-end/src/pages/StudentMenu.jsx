@@ -1,0 +1,11 @@
+import { useMemo, useState } from "react";
+import { useApp } from "../context/AppContext";
+import PageHeader from "../components/PageHeader";
+import FoodCard from "../components/FoodCard";
+import { Link } from "react-router-dom";
+export default function StudentMenu(){
+ const {filteredFoods,query,setQuery,cartCount}=useApp(); const [cat,setCat]=useState("Tout le Menu");
+ const cats=["Tout le Menu","Plats Traditionnels","Cuisine Camerounaise","Grillades Camerounaises","Cuisine des Grassfields","Plats du Jour","Snacks Camerounais","Boissons & Jus","Restauration Rapide"];
+ const shown=useMemo(()=>cat==="Tout le Menu"?filteredFoods:filteredFoods.filter(f=>f.category===cat),[filteredFoods,cat]);
+ return <><PageHeader eyebrow="Espace Restaurant Universitaire" title="Saveurs Exclusives & Confort Gourmand" subtitle="Bienvenue sur votre espace de restauration ZEDUC-SP@CE. Découvrez les spécialités camerounaises fraîchement préparées par nos chefs." actions={<Link className="cart-pill" to="/etudiant/panier">🛍 {cartCount} · Votre Commande</Link>}/><div className="loyalty-banner"><div><span>Réserve Fidélité</span><b>45 <small>pts cumulés</small></b></div><div><b>380 pts</b><small>avant prochain dessert offert</small></div><div className="progress-wrap"><small>Progression vers votre prochain avantage</small><div className="progress"><div className="progress-bar" style={{width:"72%"}}></div></div></div></div><div className="menu-toolbar"><div className="tabs">{cats.map(c=><button className={cat===c?"active":""} onClick={()=>setCat(c)} key={c}>{c}</button>)}</div><label className="search-box"><span>⌕</span><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Rechercher un plat ou une boisson..." /></label></div><div className="section-title compact-title"><div><span className="eyebrow">Sélection du Chef</span><h2>Nos Meilleurs Plats</h2></div><span className="muted">Calculé automatiquement selon les ventes du jour</span></div><div className="food-grid">{shown.slice(0,6).map(f=><FoodCard key={f.id} food={f}/>)}</div><div className="section-title compact-title"><div><span className="eyebrow">Carte complète</span><h2>Autres Plats & Boissons</h2></div></div><div className="food-grid">{shown.slice(6).map(f=><FoodCard key={f.id} food={f} compact/>)}</div></>
+}
