@@ -1,0 +1,10 @@
+# Dependencies
+**/node_modules/
+
+# Laravel dependencies
+back-end/vendor/
+
+# Environment secrets
+.env
+.env.*
+!.env.example
