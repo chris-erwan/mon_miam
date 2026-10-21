@@ -7,31 +7,34 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MenuItem extends Model
 {
+    protected $table = 'elements_menu';
+
+    protected $primaryKey = 'id_element';
+
     public $timestamps = false;
 
     protected $fillable = [
-        'restaurant_id',
-        'category_id',
-        'name',
+        'id_categorie',
+        'nom',
         'description',
-        'price',
-        'available',
-        'is_daily',
+        'prix',
+        'image',
+        'disponible',
+        'plat_du_jour',
     ];
 
     protected function casts(): array
     {
         return [
-            'restaurant_id' => 'integer',
-            'category_id' => 'integer',
-            'price' => 'integer',
-            'available' => 'boolean',
-            'is_daily' => 'boolean',
+            'id_categorie' => 'integer',
+            'prix' => 'integer',
+            'disponible' => 'boolean',
+            'plat_du_jour' => 'boolean',
         ];
     }
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(MenuCategory::class, 'category_id');
+        return $this->belongsTo(MenuCategory::class, 'id_categorie');
     }
 }

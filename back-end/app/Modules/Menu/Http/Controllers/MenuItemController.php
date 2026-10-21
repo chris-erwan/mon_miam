@@ -2,6 +2,7 @@
 
 namespace App\Modules\Menu\Http\Controllers;
 
+use App\Modules\Menu\Models\MenuCategory;
 use App\Modules\Menu\Models\MenuItem;
 use App\Modules\Menu\Services\MenuItemService;
 use Illuminate\Http\JsonResponse;
@@ -15,10 +16,10 @@ class MenuItemController
     public function index(Request $request): JsonResponse
     {
         $filters = $request->validate([
-            'restaurant_id' => ['sometimes', 'integer'],
-            'category_id' => ['sometimes', 'integer'],
-            'available' => ['sometimes', 'boolean'],
-            'is_daily' => ['sometimes', 'boolean'],
+            'id_restaurant' => ['sometimes', 'integer'],
+            'id_categorie' => ['sometimes', 'integer'],
+            'disponible' => ['sometimes', 'boolean'],
+            'plat_du_jour' => ['sometimes', 'boolean'],
         ]);
 
         return response()->json($this->service->list($filters));
@@ -32,16 +33,18 @@ class MenuItemController
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'restaurant_id' => ['required', 'integer'],
-            'category_id' => ['required', 'integer', 'exists:menu_categories,id'],
-            'name' => ['required', 'string', 'max:255'],
+            'id_categorie' => ['required', 'integer', 'exists:categories_menu,id_categorie'],
+            'nom' => ['required', 'string', 'max:150'],
             'description' => ['nullable', 'string'],
-            'price' => ['required', 'integer', 'min:0'],
-            'available' => ['sometimes', 'boolean'],
-            'is_daily' => ['sometimes', 'boolean'],
+            'prix' => ['required', 'integer', 'min:0'],
+            'image' => ['nullable', 'string', 'max:255'],
+            'disponible' => ['sometimes', 'boolean'],
+            'plat_du_jour' => ['sometimes', 'boolean'],
         ]);
 
-        Gate::authorize('create', [MenuItem::class, $data['restaurant_id']]);
+        $category = MenuCategory::findOrFail($data['id_categorie']);
+
+        Gate::authorize('create', [MenuItem::class, $category->id_restaurant]);
 
         return response()->json($this->service->create($data), 201);
     }
@@ -51,13 +54,20 @@ class MenuItemController
         Gate::authorize('update', $menuItem);
 
         $data = $request->validate([
-            'category_id' => ['sometimes', 'integer', 'exists:menu_categories,id'],
-            'name' => ['sometimes', 'string', 'max:255'],
+            'id_categorie' => ['sometimes', 'integer', 'exists:categories_menu,id_categorie'],
+            'nom' => ['sometimes', 'string', 'max:150'],
             'description' => ['sometimes', 'nullable', 'string'],
-            'price' => ['sometimes', 'integer', 'min:0'],
-            'available' => ['sometimes', 'boolean'],
-            'is_daily' => ['sometimes', 'boolean'],
+            'prix' => ['sometimes', 'integer', 'min:0'],
+            'image' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'disponible' => ['sometimes', 'boolean'],
+            'plat_du_jour' => ['sometimes', 'boolean'],
         ]);
+
+        if (isset($data['id_categorie'])) {
+            $target = MenuCategory::findOrFail($data['id_categorie']);
+
+            Gate::authorize('create', [MenuItem::class, $target->id_restaurant]);
+        }
 
         return response()->json($this->service->update($menuItem, $data));
     }

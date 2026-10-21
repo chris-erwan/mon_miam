@@ -10,11 +10,17 @@ class MenuItemService
     public function list(array $filters): LengthAwarePaginator
     {
         return MenuItem::query()
-            ->when(isset($filters['restaurant_id']), fn ($query) => $query->where('restaurant_id', $filters['restaurant_id']))
-            ->when(isset($filters['category_id']), fn ($query) => $query->where('category_id', $filters['category_id']))
-            ->when(isset($filters['available']), fn ($query) => $query->where('available', $filters['available']))
-            ->when(isset($filters['is_daily']), fn ($query) => $query->where('is_daily', $filters['is_daily']))
-            ->orderBy('name')
+            ->when(
+                isset($filters['id_restaurant']),
+                fn ($query) => $query->whereHas(
+                    'category',
+                    fn ($category) => $category->where('id_restaurant', $filters['id_restaurant'])
+                )
+            )
+            ->when(isset($filters['id_categorie']), fn ($query) => $query->where('id_categorie', $filters['id_categorie']))
+            ->when(isset($filters['disponible']), fn ($query) => $query->where('disponible', $filters['disponible']))
+            ->when(isset($filters['plat_du_jour']), fn ($query) => $query->where('plat_du_jour', $filters['plat_du_jour']))
+            ->orderBy('nom')
             ->paginate(15);
     }
 

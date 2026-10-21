@@ -21,12 +21,12 @@ class AdminController
     public function createEmployee(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8'],
-            'phone' => ['nullable', 'string', 'max:20'],
-            'restaurant_id' => ['required', 'integer'],
-            'role' => ['required', Rule::in([Role::Employee->value, Role::Manager->value])],
+            'nom' => ['required', 'string', 'max:150'],
+            'email' => ['required', 'email', 'max:190', 'unique:utilisateurs,email'],
+            'mot_de_passe' => ['required', 'string', 'min:8'],
+            'telephone' => ['nullable', 'string', 'max:30'],
+            'id_restaurant' => ['required', 'integer'],
+            'id_role' => ['required', Rule::in([Role::Employee->value, Role::Manager->value])],
         ]);
 
         $staff = $this->service->createStaff($this->admin($request), $data);
@@ -48,6 +48,6 @@ class AdminController
 
     private function admin(Request $request): Admin
     {
-        return Admin::findOrFail($request->user()->id);
+        return Admin::findOrFail($request->user()->getKey());
     }
 }

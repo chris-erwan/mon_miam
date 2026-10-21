@@ -1,11 +1,12 @@
 <?php
- 
+
 namespace App\Shared\Enums;
- 
-enum Role: string
+
+// Les valeurs sont les identifiants de la table `roles` (colonne id_role).
+enum Role: int
 {
-    case Student = 'etudiant';
-    case Employee = 'employe';
-    case Manager = 'gerant';
-    case Admin = 'admin';
+    case Student = 1;
+    case Employee = 2;
+    case Manager = 3;
+    case Admin = 4;
 }

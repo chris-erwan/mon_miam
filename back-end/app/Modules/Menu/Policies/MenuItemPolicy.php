@@ -15,22 +15,23 @@ class MenuItemPolicy
 
     public function update(Authenticatable $user, MenuItem $menuItem): bool
     {
-        return $this->canManage($user, $menuItem->restaurant_id);
+        return $this->canManage($user, $menuItem->category?->id_restaurant);
     }
 
     public function delete(Authenticatable $user, MenuItem $menuItem): bool
     {
-        return $this->canManage($user, $menuItem->restaurant_id);
+        return $this->canManage($user, $menuItem->category?->id_restaurant);
     }
 
-    private function canManage(Authenticatable $user, int $restaurantId): bool
+    private function canManage(Authenticatable $user, ?int $restaurantId): bool
     {
-        if ($user->role === Role::Admin->value) {
+        if ($user->id_role === Role::Admin->value) {
             return true;
         }
 
-        return in_array($user->role, [Role::Employee->value, Role::Manager->value], true)
-            && $user->restaurant_id !== null
-            && (int) $user->restaurant_id === $restaurantId;
-        }
+        return in_array($user->id_role, [Role::Employee->value, Role::Manager->value], true)
+            && $restaurantId !== null
+            && $user->id_restaurant !== null
+            && (int) $user->id_restaurant === $restaurantId;
+    }
 }
