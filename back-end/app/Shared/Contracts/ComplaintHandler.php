@@ -2,7 +2,7 @@
  
 namespace App\Shared\Contracts;
  
-interface StatisticsProvider
+interface ComplaintHandler
 {
     public function weekly(int $restaurantId): array;
  

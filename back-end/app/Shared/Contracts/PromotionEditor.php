@@ -2,7 +2,7 @@
  
 namespace App\Shared\Contracts;
  
-interface StatisticsProvider
+interface PromotionEditor
 {
     public function weekly(int $restaurantId): array;
  
