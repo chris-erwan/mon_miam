@@ -7,21 +7,21 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['api', 'auth:sanctum'])->group(function () {
 
-    Route::prefix('api/employee')->group(function () {
+    Route::prefix('api/employee')->middleware('role:employee,manager,admin')->group(function () {
         Route::post('orders/{orderId}/validate', [EmployeeController::class, 'validateOrder']);
         Route::patch('orders/{orderId}/status', [EmployeeController::class, 'changeOrderStatus']);
         Route::post('complaints/{complaintId}/reply', [EmployeeController::class, 'replyToComplaint']);
         Route::get('stats/weekly', [EmployeeController::class, 'weeklyStats']);
     });
 
-    Route::prefix('api/manager')->group(function () {
+    Route::prefix('api/manager')->middleware('role:manager,admin')->group(function () {
         Route::get('orders', [ManagerController::class, 'superviseOrders']);
         Route::post('employees', [ManagerController::class, 'createEmployee']);
         Route::post('complaints/{complaintId}/validate', [ManagerController::class, 'validateComplaint']);
         Route::get('stats/general', [ManagerController::class, 'generalStats']);
     });
 
-    Route::prefix('api/admin')->group(function () {
+    Route::prefix('api/admin')->middleware('role:admin')->group(function () {
         Route::get('employees', [AdminController::class, 'employees']);
         Route::post('employees', [AdminController::class, 'createEmployee']);
         Route::delete('employees/{employeeId}', [AdminController::class, 'deleteEmployee']);

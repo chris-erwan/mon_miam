@@ -17,9 +17,16 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->group(base_path('app/Modules/Auth/routes/web.php'));
         },
     )
-    ->withMiddleware(function (Middleware $middleware): void {
-        //
+    ->withCommands([
+        \App\Modules\Fidelite\Console\ExpireLoyaltyPoints::class,
+    ])
+        ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->alias([
+            'role' => \App\Host\Http\Middleware\EnsureRole::class,
+        ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->shouldRenderJsonWhen(
+            fn ($request, $e) => $request->is('api/*') || $request->expectsJson()
+        );
     })->create();
