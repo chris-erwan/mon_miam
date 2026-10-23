@@ -2,6 +2,7 @@
 
 namespace App\Modules\Menu\Models;
 
+use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -37,4 +38,32 @@ class MenuItem extends Model
     {
         return $this->belongsTo(MenuCategory::class, 'id_categorie');
     }
+
+    /**
+     * Modifie le prix en s'assurant qu'il reste positif ou nul.
+     */
+    public function setPrice(int $price): void
+    {
+        if ($price < 0) {
+            throw new InvalidArgumentException('Le prix ne peut pas être négatif');
+        }
+
+        $this->attributes['price'] = $price;
+    }
+
+    /**
+     * Marque le plat comme indisponible (rupture de stock).
+     */
+    public function markAsUnavailable(): void
+{
+    $this->attributes['disponible'] = false;
+}
+
+    /**
+     * Marque le plat comme disponible.
+     */
+    public function markAsAvailable(): void
+{
+    $this->attributes['disponible'] = true;
+}
 }
