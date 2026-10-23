@@ -7,16 +7,6 @@ use App\Modules\Auth\Models\Manager;
 
 class ManagerService extends EmployeeService
 {
-    // superviserCommandes()
-    public function superviseOrders(Manager $manager, ?int $restaurantId = null): array
-    {
-        $restaurantId ??= (int) $manager->id_restaurant;
-
-        $this->ensureWorksIn($manager, $restaurantId);
-
-        // TODO: appeler le module Commandes.
-        return ['id_restaurant' => $restaurantId, 'orders' => []];
-    }
 
     // creerEmploye()
     public function createEmployee(Manager $manager, array $data): Employee
