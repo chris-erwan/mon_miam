@@ -10,23 +10,23 @@ class ManagerService extends EmployeeService
     // superviserCommandes()
     public function superviseOrders(Manager $manager, ?int $restaurantId = null): array
     {
-        $restaurantId ??= (int) $manager->restaurant_id;
+        $restaurantId ??= (int) $manager->id_restaurant;
 
         $this->ensureWorksIn($manager, $restaurantId);
 
         // TODO: appeler le module Commandes.
-        return ['restaurant_id' => $restaurantId, 'orders' => []];
+        return ['id_restaurant' => $restaurantId, 'orders' => []];
     }
 
     // creerEmploye()
     public function createEmployee(Manager $manager, array $data): Employee
     {
         return Employee::create([
-            'name' => $data['name'],
+            'nom' => $data['nom'],
             'email' => $data['email'],
-            'password' => $data['password'],
-            'phone' => $data['phone'] ?? null,
-            'restaurant_id' => $manager->restaurant_id,
+            'mot_de_passe_hash' => $data['mot_de_passe'],
+            'telephone' => $data['telephone'] ?? null,
+            'id_restaurant' => $manager->id_restaurant,
         ]);
     }
 
@@ -39,11 +39,11 @@ class ManagerService extends EmployeeService
     // voirStatsGenerales()
     public function generalStats(Manager $manager, ?int $restaurantId = null): array
     {
-        $restaurantId ??= (int) $manager->restaurant_id;
+        $restaurantId ??= (int) $manager->id_restaurant;
 
         $this->ensureWorksIn($manager, $restaurantId);
 
         // TODO: remplacer par les vraies stats.
-        return ['restaurant_id' => $restaurantId, 'period' => 'all', 'data' => []];
+        return ['id_restaurant' => $restaurantId, 'period' => 'all', 'data' => []];
     }
 }

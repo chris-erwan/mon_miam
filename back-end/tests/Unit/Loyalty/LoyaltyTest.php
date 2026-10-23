@@ -33,13 +33,12 @@ final class LoyaltyTest extends TestCase
     public function test_successful_referral_rewards_both_referrer_and_referee(): void
     {
         $service = new LoyaltyService();
+        $referrer = new User(['points_solde' => 50]);
+$referee  = new User(['points_solde' => 0]);
 
-        $referrer = new User(['id' => 1, 'loyalty_points' => 50]);
-        $referee  = new User(['id' => 2, 'loyalty_points' => 0]);
+$service->rewardReferral($referrer, $referee);
 
-        $service->rewardReferral($referrer, $referee);
-
-        $this->assertSame(100, $referrer->loyalty_points, "Le parrain reçoit 50 points bonus.");
-        $this->assertSame(20,  $referee->loyalty_points,  "Le filleul reçoit 20 points de bienvenue.");
+$this->assertSame(100, $referrer->points_solde, "Le parrain reçoit 50 points bonus.");
+$this->assertSame(20, $referee->points_solde, "Le filleul reçoit 20 points de bienvenue.");
     }
 }

@@ -44,7 +44,7 @@ class LoyaltyService
         $referrerBonus = 50;
         $refereeBonus = 20;
 
-        $referrer->loyalty_points = (int) ($referrer->loyalty_points ?? 0) + $referrerBonus;
-        $referee->loyalty_points = (int) ($referee->loyalty_points ?? 0) + $refereeBonus;
+        $referrer->points_solde = (int) ($referrer->points_solde ?? 0) + $referrerBonus;
+$referee->points_solde = (int) ($referee->points_solde ?? 0) + $refereeBonus;
     }
 }

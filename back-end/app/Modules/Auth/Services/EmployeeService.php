@@ -20,12 +20,6 @@ class EmployeeService
         // TODO: appeler le module Commandes.
     }
 
-    // majMenu()
-    public function updateMenu(Employee $employee, int $menuItemId, array $data): void
-    {
-        // TODO: appeler le module Menu (le tien).
-    }
-
     // repondreReclamation()
     public function replyToComplaint(Employee $employee, int $complaintId, string $reply): void
     {
@@ -35,12 +29,16 @@ class EmployeeService
     // voirStatsHebdo()
     public function weeklyStats(Employee $employee, ?int $restaurantId = null): array
     {
-        $restaurantId ??= (int) $employee->restaurant_id;
+        $restaurantId ??= (int) $employee->id_restaurant;
 
         $this->ensureWorksIn($employee, $restaurantId);
 
         // TODO: remplacer par les vraies stats.
-        return ['restaurant_id' => $restaurantId, 'period' => 'week', 'data' => []];
+        return [
+            'id_restaurant' => $restaurantId,
+            'period' => 'week',
+            'data' => [],
+        ];
     }
 
     protected function ensureWorksIn(Employee $employee, int $restaurantId): void

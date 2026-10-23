@@ -20,14 +20,14 @@ class AdminService extends ManagerService
     // gererEmployes() : création
     public function createStaff(Admin $admin, array $data): Employee
     {
-        $model = $data['role'] === Role::Manager->value ? Manager::class : Employee::class;
+        $model = (int) $data['id_role'] === Role::Manager->value ? Manager::class : Employee::class;
 
         return $model::create([
-            'name' => $data['name'],
+            'nom' => $data['nom'],
             'email' => $data['email'],
-            'password' => $data['password'],
-            'phone' => $data['phone'] ?? null,
-            'restaurant_id' => $data['restaurant_id'],
+            'mot_de_passe_hash' => $data['mot_de_passe'],
+            'telephone' => $data['telephone'] ?? null,
+            'id_restaurant' => $data['id_restaurant'],
         ]);
     }
 
@@ -35,12 +35,6 @@ class AdminService extends ManagerService
     public function deleteStaff(Admin $admin, int $employeeId): void
     {
         $this->staffQuery()->findOrFail($employeeId)->delete();
-    }
-
-    // gererMenu()
-    public function manageMenu(Admin $admin): void
-    {
-        // TODO: les routes du menu seront dans le module Menu (accès admin via le Host).
     }
 
     // gererPromotions()
@@ -65,6 +59,6 @@ class AdminService extends ManagerService
     private function staffQuery(): Builder
     {
         return Employee::withoutGlobalScope('roles')
-            ->whereIn('role', [Role::Employee->value, Role::Manager->value]);
+            ->whereIn('id_role', [Role::Employee->value, Role::Manager->value]);
     }
 }

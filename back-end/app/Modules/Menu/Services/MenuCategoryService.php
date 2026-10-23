@@ -8,14 +8,18 @@ use Illuminate\Validation\ValidationException;
 
 class MenuCategoryService
 {
-    public function list(): Collection
+    public function list(array $filters): Collection
     {
-        return MenuCategory::query()->orderBy('name')->get();
+        return MenuCategory::query()
+            ->when(isset($filters['id_restaurant']), fn ($query) => $query->where('id_restaurant', $filters['id_restaurant']))
+            ->orderBy('ordre_affichage')
+            ->orderBy('libelle')
+            ->get();
     }
 
     public function items(MenuCategory $menuCategory): Collection
     {
-        return $menuCategory->menuItems()->orderBy('name')->get();
+        return $menuCategory->menuItems()->orderBy('nom')->get();
     }
 
     public function create(array $data): MenuCategory
@@ -34,7 +38,7 @@ class MenuCategoryService
     {
         if ($menuCategory->menuItems()->exists()) {
             throw ValidationException::withMessages([
-                'category' => 'Cette catégorie contient encore des plats.',
+                'categorie' => 'Cette catégorie contient encore des plats.',
             ]);
         }
 

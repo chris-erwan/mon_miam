@@ -8,23 +8,29 @@ use Illuminate\Contracts\Auth\Authenticatable;
 
 class MenuCategoryPolicy
 {
-    public function create(Authenticatable $user): bool
+    public function create(Authenticatable $user, int $restaurantId): bool
     {
-        return $this->isAdmin($user);
+        return $this->canManage($user, $restaurantId);
     }
 
     public function update(Authenticatable $user, MenuCategory $menuCategory): bool
     {
-        return $this->isAdmin($user);
+        return $this->canManage($user, $menuCategory->id_restaurant);
     }
 
     public function delete(Authenticatable $user, MenuCategory $menuCategory): bool
     {
-        return $this->isAdmin($user);
+        return $this->canManage($user, $menuCategory->id_restaurant);
     }
 
-    private function isAdmin(Authenticatable $user): bool
+    private function canManage(Authenticatable $user, int $restaurantId): bool
     {
-        return $user->role === Role::Admin->value;
+        if ($user->id_role === Role::Admin->value) {
+            return true;
+        }
+
+        return $user->id_role === Role::Manager->value
+            && $user->id_restaurant !== null
+            && (int) $user->id_restaurant === $restaurantId;
     }
 }

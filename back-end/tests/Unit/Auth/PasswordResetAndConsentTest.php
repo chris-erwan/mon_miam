@@ -30,12 +30,12 @@ final class PasswordResetAndConsentTest extends TestCase
 
     public function test_cookie_consent_recording(): void
     {
-        $consent = new CookieConsent([
-            'user_id'  => 15,
-            'accepted' => true,
-        ]);
+       $consent = new CookieConsent([
+    'id_utilisateur' => 15,
+    'accepte'        => true,
+]);
 
-        $this->assertTrue($consent->accepted);
-        $this->assertSame(15, $consent->user_id);
+$this->assertTrue($consent->accepte);
+$this->assertSame(15, $consent->id_utilisateur);
     }
 }

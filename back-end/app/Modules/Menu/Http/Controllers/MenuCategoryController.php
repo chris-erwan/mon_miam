@@ -13,9 +13,13 @@ class MenuCategoryController
 {
     public function __construct(private readonly MenuCategoryService $service) {}
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        return response()->json($this->service->list());
+        $filters = $request->validate([
+            'id_restaurant' => ['sometimes', 'integer'],
+        ]);
+
+        return response()->json($this->service->list($filters));
     }
 
     public function show(MenuCategory $menuCategory): JsonResponse
@@ -30,11 +34,19 @@ class MenuCategoryController
 
     public function store(Request $request): JsonResponse
     {
-        Gate::authorize('create', MenuCategory::class);
-
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:menu_categories,name'],
+            'id_restaurant' => ['required', 'integer'],
+            'libelle' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('categories_menu', 'libelle')
+                    ->where('id_restaurant', $request->input('id_restaurant')),
+            ],
+            'ordre_affichage' => ['sometimes', 'integer', 'min:0'],
         ]);
+
+        Gate::authorize('create', [MenuCategory::class, $data['id_restaurant']]);
 
         return response()->json($this->service->create($data), 201);
     }
@@ -44,12 +56,15 @@ class MenuCategoryController
         Gate::authorize('update', $menuCategory);
 
         $data = $request->validate([
-            'name' => [
-                'required',
+            'libelle' => [
+                'sometimes',
                 'string',
-                'max:255',
-                Rule::unique('menu_categories', 'name')->ignore($menuCategory->id),
+                'max:100',
+                Rule::unique('categories_menu', 'libelle')
+                    ->where('id_restaurant', $menuCategory->id_restaurant)
+                    ->ignore($menuCategory->id_categorie, 'id_categorie'),
             ],
+            'ordre_affichage' => ['sometimes', 'integer', 'min:0'],
         ]);
 
         return response()->json($this->service->update($menuCategory, $data));

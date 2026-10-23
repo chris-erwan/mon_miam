@@ -13,7 +13,7 @@ class ManagerController
 
     public function superviseOrders(Request $request): JsonResponse
     {
-        $restaurantId = $request->integer('restaurant_id') ?: null;
+        $restaurantId = $request->integer('id_restaurant') ?: null;
 
         return response()->json(
             $this->service->superviseOrders($this->manager($request), $restaurantId)
@@ -23,10 +23,10 @@ class ManagerController
     public function createEmployee(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8'],
-            'phone' => ['nullable', 'string', 'max:20'],
+            'nom' => ['required', 'string', 'max:150'],
+            'email' => ['required', 'email', 'max:190', 'unique:utilisateurs,email'],
+            'mot_de_passe' => ['required', 'string', 'min:8'],
+            'telephone' => ['nullable', 'string', 'max:30'],
         ]);
 
         $employee = $this->service->createEmployee($this->manager($request), $data);
@@ -43,7 +43,7 @@ class ManagerController
 
     public function generalStats(Request $request): JsonResponse
     {
-        $restaurantId = $request->integer('restaurant_id') ?: null;
+        $restaurantId = $request->integer('id_restaurant') ?: null;
 
         return response()->json(
             $this->service->generalStats($this->manager($request), $restaurantId)
@@ -52,6 +52,6 @@ class ManagerController
 
     private function manager(Request $request): Manager
     {
-        return Manager::findOrFail($request->user()->id);
+        return Manager::findOrFail($request->user()->getKey());
     }
 }

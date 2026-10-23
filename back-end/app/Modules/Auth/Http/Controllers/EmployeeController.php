@@ -14,42 +14,43 @@ class EmployeeController
     public function validateOrder(Request $request, int $orderId): JsonResponse
     {
         $this->service->validateOrder($this->employee($request), $orderId);
+
         return response()->json(['message' => 'Commande validée.']);
     }
 
     public function changeOrderStatus(Request $request, int $orderId): JsonResponse
     {
-        $data = $request->validate(['status' => ['required', 'string']]);
-        $this->service->changeOrderStatus($this->employee($request), $orderId, $data['status']);
-        return response()->json(['message' => 'Statut mis à jour.']);
-    }
-
-    public function updateMenu(Request $request, int $menuItemId): JsonResponse
-    {
         $data = $request->validate([
-            'name' => ['sometimes', 'string', 'max:255'],
-            'price' => ['sometimes', 'numeric', 'min:0'],
-            'available' => ['sometimes', 'boolean'],
+            'statut' => ['required', 'string', 'max:20'],
         ]);
-        $this->service->updateMenu($this->employee($request), $menuItemId, $data);
-        return response()->json(['message' => 'Menu mis à jour.']);
+
+        $this->service->changeOrderStatus($this->employee($request), $orderId, $data['statut']);
+
+        return response()->json(['message' => 'Statut mis à jour.']);
     }
 
     public function replyToComplaint(Request $request, int $complaintId): JsonResponse
     {
-        $data = $request->validate(['reply' => ['required', 'string', 'max:2000']]);
-        $this->service->replyToComplaint($this->employee($request), $complaintId, $data['reply']);
+        $data = $request->validate([
+            'reponse' => ['required', 'string', 'max:2000'],
+        ]);
+
+        $this->service->replyToComplaint($this->employee($request), $complaintId, $data['reponse']);
+
         return response()->json(['message' => 'Réponse envoyée.']);
     }
 
     public function weeklyStats(Request $request): JsonResponse
     {
-        $restaurantId = $request->integer('restaurant_id') ?: null;
-        return response()->json($this->service->weeklyStats($this->employee($request), $restaurantId));
+        $restaurantId = $request->integer('id_restaurant') ?: null;
+
+        return response()->json(
+            $this->service->weeklyStats($this->employee($request), $restaurantId)
+        );
     }
 
     private function employee(Request $request): Employee
     {
-        return Employee::withoutGlobalScope('roles')->findOrFail($request->user()->id);
+        return Employee::withoutGlobalScope('roles')->findOrFail($request->user()->getKey());
     }
 }
