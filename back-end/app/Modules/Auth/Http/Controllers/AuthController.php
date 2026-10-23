@@ -15,7 +15,7 @@ class AuthController
     {
     }
 
-    public function register(Request $request): JsonResponse
+        public function register(Request $request): JsonResponse
     {
         $data = $request->validate([
             'nom'             => ['required', 'string', 'max:150'],
@@ -24,6 +24,8 @@ class AuthController
             'telephone'       => ['nullable', 'string', 'max:30'],
             'localisation'    => ['nullable', 'string', 'max:255'],
             'code_parrainage' => ['nullable', 'string', 'max:20'],
+        ], [
+            'mot_de_passe.regex' => 'Le mot de passe doit contenir au moins une majuscule, un chiffre et 8 caractères.',
         ]);
 
         $result = $this->service->register($data);

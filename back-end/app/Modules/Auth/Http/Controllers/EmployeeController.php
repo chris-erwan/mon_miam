@@ -11,23 +11,6 @@ class EmployeeController
 {
     public function __construct(private readonly EmployeeService $service) {}
 
-    public function validateOrder(Request $request, int $orderId): JsonResponse
-    {
-        $this->service->validateOrder($this->employee($request), $orderId);
-
-        return response()->json(['message' => 'Commande validée.']);
-    }
-
-    public function changeOrderStatus(Request $request, int $orderId): JsonResponse
-    {
-        $data = $request->validate([
-            'statut' => ['required', 'string', 'max:20'],
-        ]);
-
-        $this->service->changeOrderStatus($this->employee($request), $orderId, $data['statut']);
-
-        return response()->json(['message' => 'Statut mis à jour.']);
-    }
 
     public function replyToComplaint(Request $request, int $complaintId): JsonResponse
     {

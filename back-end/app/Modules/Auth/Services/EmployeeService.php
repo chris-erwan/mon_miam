@@ -7,18 +7,6 @@ use Illuminate\Auth\Access\AuthorizationException;
 
 class EmployeeService
 {
-    // validerCommande()
-    public function validateOrder(Employee $employee, int $orderId): void
-    {
-        // TODO: appeler le module Commandes (via un contrat branché par le Host).
-        // TODO: vérifier que la commande appartient au restaurant de l'employé.
-    }
-
-    // changerStatut()
-    public function changeOrderStatus(Employee $employee, int $orderId, string $status): void
-    {
-        // TODO: appeler le module Commandes.
-    }
 
     // repondreReclamation()
     public function replyToComplaint(Employee $employee, int $complaintId, string $reply): void

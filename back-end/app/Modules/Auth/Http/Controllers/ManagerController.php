@@ -11,15 +11,6 @@ class ManagerController
 {
     public function __construct(private readonly ManagerService $service) {}
 
-    public function superviseOrders(Request $request): JsonResponse
-    {
-        $restaurantId = $request->integer('id_restaurant') ?: null;
-
-        return response()->json(
-            $this->service->superviseOrders($this->manager($request), $restaurantId)
-        );
-    }
-
     public function createEmployee(Request $request): JsonResponse
     {
         $data = $request->validate([
